@@ -24,14 +24,25 @@ jobs:
           java-version: '21'
           distribution: 'microsoft'
 
-      - name: Build with Maven
-        run: mvn -f WebPage/SistemaDeCalificaciones/pom.xml clean install
+      - name: Find and Build with Maven
+        run: |
+          echo Searching for pom.xml...
+          FOR /R %%i IN (pom.xml) DO (
+              IF EXIST "%%i" (
+                  echo FOUND IT AT: "%%i"
+                  mvn -f "%%i" clean install
+                  goto :found
+              )
+          )
+          echo ERROR: Could not find pom.xml anywhere in the repository!
+          exit 1
+          :found
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/WebPage/sistemacalificaciones/target/*.war'
+          path: '**/target/*.war'
 
   deploy:
     runs-on: windows-latest
