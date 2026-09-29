@@ -25,6 +25,7 @@ jobs:
           distribution: 'microsoft'
 
       - name: Find and Build with Maven
+        shell: cmd
         run: |
           echo Searching for pom.xml...
           FOR /R %%i IN (pom.xml) DO (
